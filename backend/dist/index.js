@@ -1,19 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
 const socket_io_1 = require("socket.io");
 const http_1 = require("http");
 const server = (0, http_1.createServer)();
-const io = new socket_io_1.Server({
+const io = new socket_io_1.Server(server, {
     cors: {
-        origin: "http://localhost:3000",
-        credentials: true,
-        methods: ["GET", "POST"],
+        origin: "http://localhost:3000", // Permite conexões do frontend
     },
 });
 io.on("connection", (socket) => {
-    io.emit("message", "Olá, mundo!", socket.id);
+    console.log(`Cliente conectado: ${socket.id}`);
+    socket.on("message", (data) => {
+        io.emit("message", { id: socket.id, text: data.text }); // Envia a mensagem para todos os clientes
+    });
+    socket.on("disconnect", () => {
+        console.log(`Cliente desconectado: ${socket.id}`);
+    });
 });
 server.listen(4000, () => {
-    console.log("Servidor iniciado na porta", 4000);
+    console.log("Servidor começou na porta 4000");
 });
