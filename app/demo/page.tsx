@@ -26,7 +26,7 @@ const Page = () => {
     if (!message.trim() || !socket) return;
     const data = { id: socket.id ?? "desconhecido", text: message };
     socket.emit("message", data);
-    setMessage(""); 
+    setMessage("");
   };
 
   return (
